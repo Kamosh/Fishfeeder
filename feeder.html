@@ -1,0 +1,57 @@
+{% args times, validationMessage, validationStyle, minTimeDiff, minTicks, maxTicks, ticksSettings %}
+<html>  
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        <title>Fish feeder</title>
+        <link rel="stylesheet" href="static/feeder.css">
+        <script type="application/javascript">
+            const times = {{ times }};
+            const validationMessage = {{ validationMessage }};
+            const MIN_TIME_DIFF = {{ minTimeDiff }};
+            const MIN_TICKS = {{ minTicks }}
+            const MAX_TICKS = {{ maxTicks }}
+        </script> 
+        <!-- SVG icons from https://www.svgrepo.com/collection/nilicons-rounded-interface-icons/ -->
+    </head>
+    <body>
+        <form action="" method="POST">
+            <span>Feed</span>
+            <input type="number" min="{{ minTicks }}" max="{{ maxTicks }}" name="ticks" required value="{{ ticksSettings }}"/>
+            <span>ticks</span>
+            <input type="submit" class="app-button" name="feed_action" value="Feed"/>
+        </form>
+
+        <hr>
+        <p id="validationError" class="hideInMoment {{ validationStyle }}"><script>document.write(validationMessage);</script>&nbsp;</p>
+        <form action="" method="POST" onsubmit="return validateTimes()">
+            <table id="table" class="styled-table">
+                <thead>
+                    <tr>
+                        <th style="min-width:120px">Time</th>
+                        <th style="min-width:80px">Ticks</th>
+                        <th style="min-width:30px">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody id="tblTbody">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3">
+                            <span>
+                                <input id="submit" class="app-button" type="submit" name="settings_submit" value="Submit"/>
+                            </span>
+                            <span>
+                                <button class="app-button" onclick="insertRow()"><img height="15px" src="static/add-svgrepo-com.svg" alt="Add Row"></button>      
+                            </span>
+                            <span>
+                                <!--<input id="cancel" class="app-button" type="submit" name="settings_cancel" value="Cancel"/>-->      
+                                <input id="cancel" class="app-button" type="button" name="settings_cancel" value="Cancel">   
+                            </span>
+                        </td>
+                    </tr>
+                </tfoot>                
+            </table>
+        </form>       
+    </body>
+    <script src="static/feeder.js"></script>
+</html>
