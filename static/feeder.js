@@ -61,7 +61,7 @@ function createRow(rowData) {
     btnRemoveImg.alt="Remove";
     btnRemove.classList.add("delete-button");
     btnRemove.appendChild(btnRemoveImg);    
-    btnRemove.addEventListener('mouseup', (event) => {
+    btnRemove.addEventListener('click', (event) => {
         // Only primary button was clicked
         if (event.button === 0) {
             deleteRow(tbodyTr);
@@ -86,7 +86,7 @@ function insertRow() {
 }
 
 function deleteRow(tr) {
-    tr.parentNode.removeChild(tr);    
+    tr.parentNode.removeChild(tr);
 }
 
 function onCancelClick(event) {
