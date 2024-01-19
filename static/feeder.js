@@ -59,11 +59,16 @@ function createRow(rowData) {
     btnRemoveImg.src="static/trash-svgrepo-com.svg";
     btnRemoveImg.height="15";
     btnRemoveImg.alt="Remove";
+    btnRemove.classList.add("delete-button");
     btnRemove.appendChild(btnRemoveImg);    
     btnRemove.addEventListener('mouseup', (event) => {
         // Only primary button was clicked
-        if (event.buttons === 1) {
+        if (event.button === 0) {
             deleteRow(tbodyTr);
+            //    let row = event.target.closest('tr');
+            //    if (row) {
+            //        deleteRow(row);
+            //    }
         }
     });
 
@@ -85,14 +90,11 @@ function deleteRow(tr) {
 }
 
 function onCancelClick(event) {
-    if (!event instanceof MouseEvent || event.which !== 1) {
+    if (!event instanceof MouseEvent || event.button !== 0) {
         event.preventDefault();
         return;
-    } 
-    let row = event.target.closest('tr');
-    if (row) {
-        deleteRow(row);
     }
+    location.reload();
 }
 
 function onCancelKey(event) {
@@ -100,10 +102,7 @@ function onCancelKey(event) {
         event.preventDefault();
         return;
     }
-    let row = event.target.closest('tr');
-    if (row) {
-        deleteRow(row);
-    }
+    location.reload();
 }
 
 // There should be at least 5 minute delay between times
