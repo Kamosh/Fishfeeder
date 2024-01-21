@@ -56,6 +56,7 @@ span
 .styled-table th,
 .styled-table td {
     padding: 12px 15px;
+    vertical-align: top;
 }
 .styled-table tbody tr {
     border-bottom: 1px solid #dddddd;
@@ -124,4 +125,21 @@ span
 .delete-button:active {  
   box-shadow: rgba(0, 0, 0, .06) 0 2px 4px;
   transform: translateY(0);
+}
+
+/*Time input error*/
+.timeError {
+  width: 100%;
+  padding: 0;
+
+  font-size: 80%;
+  color: white;
+  background-color: #900;
+  border-radius: 0 0 5px 5px;
+
+  box-sizing: border-box;
+}
+
+.timeError.active {
+  padding: 0.3em;
 }

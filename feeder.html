@@ -14,17 +14,17 @@
         <!-- SVG icons from https://www.svgrepo.com/collection/nilicons-rounded-interface-icons/ -->
     </head>
     <body>
-        <form action="" method="POST">
+        <form name="feedForm" method="POST" onsubmit="return postFeed()">
             <span>Feed</span>
-            <input type="number" min="{{ minTicks }}" max="{{ maxTicks }}" name="ticks" required value="{{ ticksSettings }}"/>
+            <input id="ticks" type="number" min="{{ minTicks }}" max="{{ maxTicks }}" required value="{{ ticksSettings }}"/>
             <span>ticks</span>
-            <input type="submit" class="app-button" name="feed_action" value="Feed"/>
+            <button type="submit" class="app-button">Submit</button>
         </form>
 
         <hr>
-        <p id="validationError" class="hideInMoment {{ validationStyle }}"><script>document.write(validationMessage);</script>&nbsp;</p>
-        <form action="" method="POST" onsubmit="return validateTimes()">
-            <table id="table" class="styled-table">
+        <p id="statusMessage" class="hideInMoment {{ validationStyle }}"><script>document.write(validationMessage);</script>&nbsp;</p>
+        <form name="settingsForm" action="" method="POST" onsubmit="return validateSettings()">
+            <table id="tableTimes" class="styled-table">
                 <thead>
                     <tr>
                         <th style="min-width:120px">Time</th>
@@ -32,7 +32,7 @@
                         <th style="min-width:30px">&nbsp;</th>
                     </tr>
                 </thead>
-                <tbody id="tblTbody">
+                <tbody id="tableBodyTimes">
                 </tbody>
                 <tfoot>
                     <tr>

@@ -30,13 +30,9 @@ async def index(request):
                 feeder.storeSettings(timeValues, ticksValues)
                 vMessage = 'Settings saved.'
                 vStyle = 'Valid'
-        elif request.form.getlist('feed_action'):
-            ticks = request.form.get('ticks')
-            vMessage = 'Feeding for ' + ticks + ' ticks...'
-            vStyle = 'Valid'
-        else:
-            vMessage = 'Settings restored.'
-            vStyle = 'Valid'
+    else:
+        vMessage = 'Settings restored.'
+        vStyle = 'Valid'
 
     # Show the feeder.html page
     Template.initialize(template_dir=".")
@@ -54,6 +50,13 @@ async def index(request):
             ticksSettings = feeder.tics_settings),
         status_code=200,
         headers=headers)
+
+@app.route('/feed', methods=['POST'])
+async def index(request):
+    print('feed request.form ', request.form)
+    ticks = request.form.get('ticks')
+    print('Feeding for ' + ticks + ' ticks...')
+    return 'Feeding for ' + ticks + ' ticks...'
 
 @app.route('/static/<path:path>')
 async def static(request, path):
