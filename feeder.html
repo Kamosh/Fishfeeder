@@ -15,9 +15,23 @@
     </head>
     <body>
         <form name="feedForm" method="POST" onsubmit="return postFeed()">
-            <span>Feed</span>
-            <input id="ticks" type="number" min="{{ minTicks }}" max="{{ maxTicks }}" required value="{{ ticksSettings }}"/>
-            <span>ticks</span>
+            <span>Feed amount</span>
+            <span>
+                <span>
+                    <input type="radio" name="amount" value="S" checked required/>
+                    <label for="small">Small</label>
+                </span>
+
+                <span>
+                    <input type="radio" name="amount" value="M"/>
+                    <label for="medium">Medium</label>
+                </span>
+
+                <span>
+                    <input type="radio" name="amount" value="L"/>
+                    <label for="large">Large</label>
+                </span>
+            </span>
             <button type="submit" class="app-button">Submit</button>
         </form>
 
@@ -27,9 +41,9 @@
             <table id="tableTimes" class="styled-table">
                 <thead>
                     <tr>
-                        <th style="min-width:120px">Time</th>
-                        <th style="min-width:80px">Ticks</th>
-                        <th style="min-width:30px">&nbsp;</th>
+                        <th align="center" style="min-width:120px">Time</th>
+                        <th align="center" style="min-width:80px">Amount</th>
+                        <th align="center" style="min-width:30px">&nbsp;</th>
                     </tr>
                 </thead>
                 <tbody id="tableBodyTimes">

@@ -7,20 +7,22 @@ MIN_TICKS = 10
 MAX_TICKS = 100
 tics_settings = 35
 
-def validateValues(timeValues, ticksValues):
-    # Same length of time values and time ticks
-    if len(timeValues) != len(ticksValues):
-        return 'Different count of times %d and ticks %d' % (len(timeValues), len(ticksValues))
+SMALL_AMOUNT = 'S'
+MEDIUM_AMOUNT = 'M'
+LARGE_AMOUNT = 'L'
+ALL_AMOUNTS = set([SMALL_AMOUNT, MEDIUM_AMOUNT, LARGE_AMOUNT])
+
+def validateValues(timeValues, amountValues):
+    # Same length of time values and amount values
+    if len(timeValues) != len(amountValues):
+        return 'Different count of times %d and ticks %d' % (len(timeValues), len(amountValues))
 
     # Time ticks within min max interval
-    for ticksValue in ticksValues:
-        print(ticksValue)
-        print(type(ticksValue))
-        print(ticksValue.isnumeric())
-        print(ticksValue.isdecimal())
-        print((MIN_TICKS <= int(ticksValue) <= MAX_TICKS))
-        if not (ticksValue.isdigit() and (MIN_TICKS <= int(ticksValue) <= MAX_TICKS)):
-            return  'Invalid ticks value \'%s\'.' % (ticksValue)
+    for amountValue in amountValues:
+        #print((MIN_TICKS# <= int(ticksValue) <= MAX_TICKS))
+        if amountValue not in ALL_AMOUNTS:
+        #if not (ticksValue.isdigit() and (MIN_TICKS <= int(ticksValue) <= MAX_TICKS)):
+            return  'Invalid amount value \'%s\'.' % (amountValue)
 
     # Validate that there is always delay 5 minutes between times
     i = 0
@@ -49,20 +51,20 @@ def convertTimeToMinutes(timeValue):
     else:
         return 60 * int(splitTime[0]) + int(splitTime[1])
 
-def storeSettings(timeValues, ticksValues):    
+def storeSettings(timeValues, amountValues):
     # Create a dictionary from two lists
-    timeAndTicks = {}
+    timeAndAmounts = {}
     for idx, timeValue in enumerate(timeValues):
-        timeAndTicks[timeValue] = int(ticksValues[idx])
-   
+        timeAndAmounts[timeValue] = amountValues[idx]
+
     # Sort by time
-    timeKeys = list(timeAndTicks.keys())
+    timeKeys = list(timeAndAmounts.keys())
     timeKeys.sort()
-    sortedTimeAndTicks = {i: timeAndTicks[i] for i in timeKeys}    
-    
+    sortedTimeAndAmounts = {i: timeAndAmounts[i] for i in timeKeys}
+
     with open(SETTINGS_FILE, 'w') as f:
-        for timeValue, ticksValue in sortedTimeAndTicks.items():      
-          f.write('%s %d\n' % (timeValue, ticksValue))
+        for timeValue, amountValue in sortedTimeAndAmounts.items():
+          f.write('%s %s\n' % (timeValue, amountValue))
 
 def loadSettings():
     settings = []
@@ -79,6 +81,9 @@ def loadSettings():
             if not line:
                 break
             values = line.strip().split(' ')
-            settings.append([values[0],int(values[1])]);
+            settings.append([values[0],values[1]]);
 
     return settings
+
+def feed(amount):
+    print('Feeder %s' % amount)

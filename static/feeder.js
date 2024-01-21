@@ -1,13 +1,13 @@
-const tableClass = "table";
-
 var _tbody;
 
 const HIDE_CLASS = 'hideInMoment';
 const INVALID_CLASS = 'invalid';
 const HIDDEN_CLASS = 'hidden';
+const VALID_CLASS = 'valid';
+var amountIndex = 0;
 
 (function generateTable() {    
-    var tbody = document.querySelector("#tblTbody");
+    var tbody = document.querySelector("#tableBodyTimes");
     var t;
     // The times is defined in krmitko.html
     for (t = 0; t < times.length; t++) {
@@ -23,58 +23,49 @@ const HIDDEN_CLASS = 'hidden';
 
 function createRow(rowData) {
     var tbodyTr = document.createElement("tr");
-//    let row = `<td>${rowData[0]}</td>`;
-//    tbodyTr.innerHTML = row;
-    
-    // Time column
-    var timeTd = document.createElement("td");
-    var timeInput = document.createElement("input");
-    timeInput.type = 'time';
-    timeInput.value = rowData[0];
-    timeInput.required = true;
-    timeInput.name = 'time';
-    timeInput.addEventListener('blur', (event) => {
-        window.setTimeout(() => validateTime(event, timeInput), 0);
-    });
-    timeTd.appendChild(timeInput);
-    //append time column with value to table row
-    tbodyTr.appendChild(timeTd);
+    let smallChecked = '';
+    let mediumChecked = '';
+    let largeChecked = '';
+    switch(rowData[1]) {
+        case 'S':
+            smallChecked = 'checked';
+            break;
+        case 'M':
+            mediumChecked = 'checked';
+            break;
+        case 'L':
+            largeChecked = 'checked';
+            break;
+    }
+    amountIndex++;
+    let row = `
+        <td>
+            <input name='time' type='time' value='${rowData[0]}' required onchange='validateSettings()'>
+            <div class='timeError' aria-live='polite'></div>
+        </td>
+        <td>
+            <!-- fieldset-->
+              <span>
+                <input type="radio" name="amount${amountIndex}" value="S" ${smallChecked}/>
+                <label for="small">Small</label>
+              </span>
 
-    // Ticks column
-    var ticksTd = document.createElement("td");
-    var ticksInput = document.createElement("input");
-    ticksInput.type = 'number';
-    ticksInput.min = MIN_TICKS;
-    ticksInput.max = MAX_TICKS;
-    ticksInput.name = 'ticks';
-    ticksInput.required = true;
-    ticksInput.value = rowData[1];
-    ticksTd.appendChild(ticksInput);
-    tbodyTr.appendChild(ticksTd);
+              <span>
+                <input type="radio" name="amount${amountIndex}" value="M" ${mediumChecked}/>
+                <label for="medium">Medium</label>
+              </span>
 
-    // Remove row button
-    var buttonTd = document.createElement("td");
-    var btnRemove = document.createElement("button");
-    var btnRemoveImg = document.createElement("img");
-    btnRemoveImg.src="static/trash-svgrepo-com.svg";
-    btnRemoveImg.height="15";
-    btnRemoveImg.alt="Remove";
-    btnRemove.classList.add("delete-button");
-    btnRemove.appendChild(btnRemoveImg);    
-    btnRemove.addEventListener('click', (event) => {
-        // Only primary button was clicked
-        if (event.button === 0) {
-            deleteRow(tbodyTr);
-            //    let row = event.target.closest('tr');
-            //    if (row) {
-            //        deleteRow(row);
-            //    }
-        }
-    });
-
-    buttonTd.append(btnRemove);
-    tbodyTr.appendChild(buttonTd);
-
+              <span>
+                <input type="radio" name="amount${amountIndex}" value="L" ${largeChecked}/>
+                <label for="large">Large</label>
+              </span>
+            <!-- /fieldset -->
+            <!-- input name='ticks' type='number' min=MIN_TICKS max=MAX_TICKS required value='${rowData[1]}' -->
+        </td>
+        <td>
+            <button class='delete-button' onclick='deleteRow(this)'><img src='static/trash-svgrepo-com.svg' alt='Remove' height='15'></button>
+        </td>`;
+    tbodyTr.innerHTML = row;
     return tbodyTr;
 }
 
@@ -85,8 +76,10 @@ function insertRow() {
     tbodyTr.focus();
 }
 
-function deleteRow(tr) {
-    tr.parentNode.removeChild(tr);
+function deleteRow(deleteBtn) {
+    var currTR = deleteBtn.closest('tr');
+    currTR.parentNode.removeChild(currTR);
+    validateSettings();
 }
 
 function onCancelClick(event) {
@@ -105,59 +98,55 @@ function onCancelKey(event) {
     location.reload();
 }
 
-// There should be at least 5 minute delay between times
-function validateTime(event, timeInput) {
-    if (Array.prototype.slice.apply(timeInput.parentElement.children).indexOf(timeInput) === -1) {
-        return;
-    }
-//    if(true) return;
-    var validationError = document.querySelector('#validationError');
-    // Convert time to sum of minutes
-    var minutes = timeToMinutes(timeInput.value);
-    if (minutes === -1) {
-        validationError.textContent = 'Set the time.';
-        validationError.style.display = 'block';
-        setTimeout(function () {
-            timeInput.focus();
-        }, 10);
-        return false;
-    }
-    // Go through all other TR tags of the same table and 
-    // check if there is minimum difference X minutes between all already set times 
-    // and currently checked time
+function validateSettings() {
+    let tblBody = document.querySelector('#tableBodyTimes');
 
-    // Get current TR row
-    var currTR = timeInput.closest('tr');
-    var tblBody = currTR.closest("tbody");
-    for (let row of tblBody.rows)
+    // All timeError elements
+    let allTimeErrors = [];
+    // TimeError elements to show violated minimum time difference
+    let minTimeDiffViolated = new Set();
+
+    for (let i = 0; i < tblBody.rows.length; i++)
     {
-        if (currTR === row) {
+        let row_1 = tblBody.rows[i];
+        let timeTD_1 = row_1.cells[0];
+        let timeInput_1 = timeTD_1.children[0];
+        let timeError_1 = timeTD_1.querySelector('.timeError');
+        allTimeErrors.push(timeError_1);
+        let minutes_1 = timeToMinutes(timeInput_1.value);
+        if(minutes_1 === -1) {
             continue;
         }
-        var timeCell = row.cells[0];
+        for (let j = i + 1; j < tblBody.rows.length; j++)
         {
-            let timeCellInput = timeCell.childNodes[0];
-            var timeDiff = minutes - timeToMinutes(timeCellInput.value);
+            let row_2 = tblBody.rows[j];
+            let timeTD_2 = row_2.cells[0];
+            let timeInput_2 = timeTD_2.children[0];
+            let timeError_2 = timeTD_2.querySelector('.timeError');
+            let minutes_2 = timeToMinutes(timeInput_2.value);
+            if (minutes_2 === -1) {
+                continue;
+            }
+            var timeDiff = minutes_1 - minutes_2;
             if (timeDiff < (MIN_TIME_DIFF + 1) && timeDiff > -(MIN_TIME_DIFF +1)) {
-                timeInput.classList.add('invalid');
-                validationError.className = '';
-                validationError.textContent = '';
-                setTimeout(function () {
-                    validationError.classList.add(HIDE_CLASS);
-                    validationError.classList.add(INVALID_CLASS);
-                    validationError.textContent = 'Minimum time diff is ' + MIN_TIME_DIFF + ' minutes.';                    
-                    timeInput.focus();
-                }, 10);
-                return false;
+                minTimeDiffViolated.add(timeError_1);
+                minTimeDiffViolated.add(timeError_2);
             }
         }
-
-        validationError.className = '';
-        validationError.classList.add(HIDDEN_CLASS);
-        validationError.innerText = '&nbsp;';
-        timeInput.classList.remove(INVALID_CLASS);
     }
-    return true;
+    allTimeErrors = allTimeErrors.filter((element) => !minTimeDiffViolated.has(element));
+
+    let result = true;
+    // TimeError elements to show violated minimum time difference
+    for(let mtd of minTimeDiffViolated) {
+       mtd.innerText = 'Min ' + MIN_TIME_DIFF + ' minutes difference';
+       result = false;
+    }
+    for(let te of allTimeErrors) {
+        te.innerText = '';
+    }
+
+    return result;
 }
 
 function timeToMinutes(timeValue) {
@@ -168,10 +157,35 @@ function timeToMinutes(timeValue) {
     return -1;
 }
 
-function validateTimes() {
-   var lastElement = document.activeElement;
-   if (lastElement.tagName.toLowerCase() === 'input' && lastElement.getAttribute('type') === 'time') {   
-       return validateTime(lastElement);
-   }
-   return true;
+function postFeed() {
+    let amountValue = document.querySelector('input[name="amount"]:checked').value;
+
+    // Parameters to send to /feed endpoint
+    let params = "amount=" + amountValue;
+
+    var http = new XMLHttpRequest();
+    http.open("POST", "feed", true);
+
+    // Set headers
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    http.onreadystatechange = function () {
+        if (http.readyState === 4 && http.status === 200) {
+            console.log(http.responseText);
+            showStatusMessage(http.responseText, VALID_CLASS);
+        }
+    };
+    http.send(params);
+    return false;
+}
+
+function showStatusMessage(text, validationClass) {
+    let statusMessage = document.querySelector('#statusMessage');
+     statusMessage.className = '';
+     statusMessage.innerHTML = text;
+     statusMessage.classList.add(validationClass);
+    setTimeout(function () {
+         statusMessage.classList.add(HIDE_CLASS);
+         statusMessage.classList.add(INVALID_CLASS);
+    }, 10);
 }
