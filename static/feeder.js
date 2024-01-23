@@ -47,17 +47,17 @@ function createRow(rowData) {
             <!-- fieldset-->
               <span>
                 <input type="radio" name="amount${amountIndex}" value="S" ${smallChecked}/>
-                <label for="small">Small</label>
+                <image width="50px" src="static/Fisch-lineart.svg#svgView(viewBox(0,0,300,300))">
               </span>
 
               <span>
-                <input type="radio" name="amount${amountIndex}" value="M" ${mediumChecked}/>
-                <label for="medium">Medium</label>
+                <input type="radio" name="amount${amountIndex}" value="M" ${mediumChecked}>
+                <image width="50px" src="static/Fisch-lineart.svg#svgView(viewBox(0,0,200,200))">
               </span>
 
               <span>
                 <input type="radio" name="amount${amountIndex}" value="L" ${largeChecked}/>
-                <label for="large">Large</label>
+                <image width="50px" src="static/Fisch-lineart.svg#svgView(viewBox(0,0,100,100))">
               </span>
             <!-- /fieldset -->
             <!-- input name='ticks' type='number' min=MIN_TICKS max=MAX_TICKS required value='${rowData[1]}' -->

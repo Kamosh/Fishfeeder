@@ -143,3 +143,11 @@ span
 .timeError.active {
   padding: 0.3em;
 }
+
+/*input[type="radio"] {
+  display:none;
+}*/
+
+input[type="radio"]:checked {
+    border: activeborder;
+}
