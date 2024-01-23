@@ -46,18 +46,15 @@ function createRow(rowData) {
         <td>
             <!-- fieldset-->
               <span>
-                <input type="radio" name="amount${amountIndex}" value="S" ${smallChecked}/>
-                <image width="50px" src="static/Fisch-lineart.svg#svgView(viewBox(0,0,300,300))">
+                <input type="radio" class="smallFish" name="amount${amountIndex}" value="S" ${smallChecked}/>
               </span>
 
               <span>
-                <input type="radio" name="amount${amountIndex}" value="M" ${mediumChecked}>
-                <image width="50px" src="static/Fisch-lineart.svg#svgView(viewBox(0,0,200,200))">
+                <input type="radio" class="mediumFish" name="amount${amountIndex}" value="M" ${mediumChecked}>
               </span>
 
               <span>
-                <input type="radio" name="amount${amountIndex}" value="L" ${largeChecked}/>
-                <image width="50px" src="static/Fisch-lineart.svg#svgView(viewBox(0,0,100,100))">
+                <input type="radio" class="largeFish" name="amount${amountIndex}" value="L" ${largeChecked}/>
               </span>
             <!-- /fieldset -->
             <!-- input name='ticks' type='number' min=MIN_TICKS max=MAX_TICKS required value='${rowData[1]}' -->
