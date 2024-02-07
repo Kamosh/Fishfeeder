@@ -148,7 +148,7 @@ span
   display:none;
 }*/
 
-input[type="radio"].smallFish:before {
+/*input[type="radio"].smallFish:before {
   content: url('Fisch-lineart.svg#svgView(viewBox(0,0,500,500))')
 }
 
@@ -163,4 +163,4 @@ input[type="radio"].largeFish:before {
 input[type=radio]:checked {
   opacity: 1;
   filter: invert(19%) sepia(59%) saturate(6431%) hue-rotate(355deg) brightness(93%) contrast(120%)
-}
+}*/

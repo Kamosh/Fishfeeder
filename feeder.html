@@ -1,19 +1,29 @@
-{% args times, validationMessage, validationStyle, minTimeDiff, minTicks, maxTicks, ticksSettings %}
+{% args times, validationMessage, validationStyle, minTimeDiff, minTicks, maxTicks, ticksSettings, currentDatetime %}
 <html>  
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
         <title>Fish feeder</title>
         <link rel="stylesheet" href="static/feeder.css">
+        <link rel="stylesheet" href="static/date-picker/css/date-picker.css" />
+        <script src="static/date-picker/js/date-picker.js"></script>
         <script type="application/javascript">
             const times = {{ times }};
             const validationMessage = {{ validationMessage }};
             const MIN_TIME_DIFF = {{ minTimeDiff }};
             const MIN_TICKS = {{ minTicks }}
             const MAX_TICKS = {{ maxTicks }}
+            const DIFF_NTP_BROWSER_TIME = {{ currentDatetime }} * 1000 - (new Date().getTime());
         </script> 
         <!-- SVG icons from https://www.svgrepo.com/collection/nilicons-rounded-interface-icons/ -->
     </head>
     <body>
+        <div>
+            <span id="myPicker"></span>
+            <input id="picker-input" hidden="true">
+            <button id="picker-toggle"><img height="15px" src="static/clock-lines-svgrepo-com.svg" alt="Set datetime"/></button>
+            <span id="clock">&nbsp;</span>
+        </div>
+
         <form name="feedForm" method="POST" onsubmit="return postFeed()">
             <span>Feed amount</span>
             <span>

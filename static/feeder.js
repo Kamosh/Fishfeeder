@@ -6,7 +6,68 @@ const HIDDEN_CLASS = 'hidden';
 const VALID_CLASS = 'valid';
 var amountIndex = 0;
 
-(function generateTable() {    
+//https://www.cssscript.com/developer-date-picker/
+const myPicker = new DatePicker({
+      el: '#myPicker',
+      toggleEl: '#picker-toggle',
+      inputEl: '#picker-input',
+      type: 'DATEHOUR',
+      hourType: '24',
+      orientation: 'true',
+      allowEmpty: 'false',
+      showButtons: 'true'
+});
+
+myPicker.el.addEventListener('wdp.open', () => {
+    var d = new Date();
+    d.setTime(d.getTime() + DIFF_NTP_BROWSER_TIME);
+    myPicker.set(d);
+});
+
+// Save time from the picker
+myPicker.el.addEventListener('wdp.save', () => {
+  console.log('save');
+  console.log(myPicker.get());
+  if (myPicker.get()['value'] === '') {
+    showStatusMessage('Not selected any datetime', INVALID_CLASS);
+    return;
+  };
+  let datetime = new Date();
+  datetime.setFullYear(myPicker.get()['year']);
+  datetime.setMonth(myPicker.get()['month']-1);
+  datetime.setDate(myPicker.get()['day']);
+  datetime.setHours(myPicker.get()['hour']);
+  datetime.setMinutes(myPicker.get()['minute']);
+  datetime.setSeconds(0);
+
+  postSaveDatetime(Math.floor(datetime.getTime()/1000));
+});
+
+(function generateClock() {
+    var span = document.getElementById('clock');
+
+    function time() {
+      var d = new Date();
+      d.setTime(d.getTime() + DIFF_NTP_BROWSER_TIME);
+      var s = d.getSeconds();
+      var m = d.getMinutes();
+      var h = d.getHours();
+      const options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      };
+      var day = d.toLocaleString('default', options);
+      span.textContent =
+        day + " " +
+        ("0" + h).substr(-2) + ":" + ("0" + m).substr(-2) + ":" + ("0" + s).substr(-2);
+    }
+
+    setInterval(time, 1000);
+})();
+
+(function generateTable() {
     var tbody = document.querySelector("#tableBodyTimes");
     var t;
     // The times is defined in krmitko.html
@@ -176,11 +237,31 @@ function postFeed() {
     return false;
 }
 
+function postSaveDatetime(datetime) {//year, month, day, hour, minute) {
+    // Parameters to send to /saveTime endpoint
+    let params = "datetime="+datetime;// "year=" + year + "&month="+month + "&day=" + day + "&hour=" +hour + "&minute=" + minute;
+
+    var http = new XMLHttpRequest();
+    http.open("POST", "saveDatetime", true);
+
+    // Set headers
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    http.onreadystatechange = function () {
+        if (http.readyState === 4 && http.status === 200) {
+            console.log(http.responseText);
+            showStatusMessage(http.responseText, VALID_CLASS);
+        }
+    };
+    http.send(params);
+    return false;
+}
+
 function showStatusMessage(text, validationClass) {
     let statusMessage = document.querySelector('#statusMessage');
-     statusMessage.className = '';
-     statusMessage.innerHTML = text;
-     statusMessage.classList.add(validationClass);
+    statusMessage.className = '';
+    statusMessage.innerHTML = text;
+    statusMessage.classList.add(validationClass);
     setTimeout(function () {
          statusMessage.classList.add(HIDE_CLASS);
          statusMessage.classList.add(INVALID_CLASS);
