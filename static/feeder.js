@@ -43,6 +43,27 @@ myPicker.el.addEventListener('wdp.save', () => {
   postSaveDatetime(Math.floor(datetime.getTime()/1000));
 });
 
+(function registerNtpSynchronization() {
+    let ntpButton = document.getElementById('ntp-button');
+    ntpButton.addEventListener('click', function() {
+        var http = new XMLHttpRequest();
+        http.open("POST", "ntpSynchronize", true);
+
+        // Set headers
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        http.onreadystatechange = function () {
+            if (http.readyState === 4 && http.status === 200) {
+                console.log(http.responseText);
+                setDatetime(http.responseText);
+                showStatusMessage('Time synchronized', VALID_CLASS);
+            }
+        };
+        http.send();
+        return false;
+    });
+})();
+
 (function generateClock() {
     var span = document.getElementById('clock');
 
@@ -250,7 +271,8 @@ function postSaveDatetime(datetime) {//year, month, day, hour, minute) {
     http.onreadystatechange = function () {
         if (http.readyState === 4 && http.status === 200) {
             console.log(http.responseText);
-            showStatusMessage(http.responseText, VALID_CLASS);
+            setDatetime(http.responseText);
+            showStatusMessage('Datetime saved', VALID_CLASS);
         }
     };
     http.send(params);
@@ -266,4 +288,8 @@ function showStatusMessage(text, validationClass) {
          statusMessage.classList.add(HIDE_CLASS);
          statusMessage.classList.add(INVALID_CLASS);
     }, 10);
+}
+
+function setDatetime(currentDatetime) {
+    DIFF_NTP_BROWSER_TIME = currentDatetime * 1000 - (new Date().getTime());
 }

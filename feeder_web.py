@@ -1,6 +1,8 @@
 import sys
 import os
 import feeder
+import ntplib
+import timeutil
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'microdot', 'libs', 'common'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'microdot', 'src'))
@@ -20,14 +22,12 @@ async def index(request):
     vStyle = '""'
     if request.method == 'POST':
         print('request.form.getlist(settings_submit) ', request.form.getlist('settings_submit'))
-        print('request.form.getlist(feed_action) ', request.form.getlist('feed_action'))
         if request.form.getlist('settings_submit'):
-            timeValues = request.form.getlist('time')
-            ticksValues = request.form.getlist('ticks')
-            vMessage = feeder.validateValues(timeValues, ticksValues)
+            (timeValues, amountValues) = parseTimesAndAmounts(request.form)
+            vMessage = feeder.validateValues(timeValues, amountValues)
             vStyle = 'Invalid'
             if not vMessage:
-                feeder.storeSettings(timeValues, ticksValues)
+                feeder.storeSettings(timeValues, amountValues)
                 vMessage = 'Settings saved.'
                 vStyle = 'Valid'
     else:
@@ -47,16 +47,37 @@ async def index(request):
             minTimeDiff=feeder.MIN_TIME_DIFF,
             minTicks = feeder.MIN_TICKS,
             maxTicks = feeder.MAX_TICKS,
-            ticksSettings = feeder.tics_settings),
+            ticksSettings = feeder.tics_settings,
+            currentDatetime = timeutil.currentTime()),
         status_code=200,
         headers=headers)
 
+# request.form data, epoch millis
+# {'datetime': ['1706984700965']}
+@app.route('/saveDatetime', methods=['POST'])
+async def saveDatetime(request):
+    print('saveTime request.form ', request.form)
+    timeutil.setCurrentTime(int(request.form.get('datetime')))
+    return str(timeutil.currentTime())
+    #return 'SaveDatetime'
+
+# request.form data
+# {'amount': ['S']}
 @app.route('/feed', methods=['POST'])
-async def index(request):
+async def feed(request):
     print('feed request.form ', request.form)
-    ticks = request.form.get('ticks')
-    print('Feeding for ' + ticks + ' ticks...')
-    return 'Feeding for ' + ticks + ' ticks...'
+    amount = request.form.get('amount')
+    feeder.feed(amount)
+    print('Feeding with ' + amount + ' amount...')
+    return 'Feeding with ' + amount + ' amount...'
+
+@app.route('/ntpSynchronize', methods=['POST'])
+async def ntpSynchronize(request):
+    print('ntpSynchronize request.form ', request.form)
+    ntp_time = timeutil.getNtpTime() /1000
+    print('ntp_time ', ntp_time)
+    timeutil.setCurrentTime(ntp_time)
+    return str(timeutil.currentTime())
 
 @app.route('/static/<path:path>')
 async def static(request, path):
@@ -64,5 +85,16 @@ async def static(request, path):
         # directory traversal is not allowed
         return 'Not found', 404
     return send_file('static/' + path)
+
+def parseTimesAndAmounts(settings_form_values):
+    timeValues = settings_form_values.getlist('time')
+    amountValues = []
+    for key in settings_form_values.keys():
+        if key.startswith('amount'):
+            amountValues.append(settings_form_values.get(key))
+
+    print('timeValues ', timeValues)
+    print('amountValues ', amountValues)
+    return (timeValues, amountValues)
 
 app.run(debug=True)

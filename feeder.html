@@ -12,14 +12,15 @@
             const MIN_TIME_DIFF = {{ minTimeDiff }};
             const MIN_TICKS = {{ minTicks }}
             const MAX_TICKS = {{ maxTicks }}
-            const DIFF_NTP_BROWSER_TIME = {{ currentDatetime }} * 1000 - (new Date().getTime());
-        </script> 
+            var DIFF_NTP_BROWSER_TIME = {{ currentDatetime }} * 1000 - (new Date().getTime());
+        </script>
         <!-- SVG icons from https://www.svgrepo.com/collection/nilicons-rounded-interface-icons/ -->
     </head>
     <body>
         <div>
             <span id="myPicker"></span>
             <input id="picker-input" hidden="true">
+            <button id="ntp-button"><img height="15px" src="static/clock-outline-badged-svgrepo-com.svg" alt="NTP synchronize"/></button>
             <button id="picker-toggle"><img height="15px" src="static/clock-lines-svgrepo-com.svg" alt="Set datetime"/></button>
             <span id="clock">&nbsp;</span>
         </div>

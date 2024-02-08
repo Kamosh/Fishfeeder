@@ -1,6 +1,5 @@
 import sys
 import os
-import time
 
 SETTINGS_FILE = 'times.txt'
 MIN_TIME_DIFF = 5 # minutes
@@ -12,8 +11,6 @@ SMALL_AMOUNT = 'S'
 MEDIUM_AMOUNT = 'M'
 LARGE_AMOUNT = 'L'
 ALL_AMOUNTS = set([SMALL_AMOUNT, MEDIUM_AMOUNT, LARGE_AMOUNT])
-
-datetime_diff = -time.time()
 
 def validateValues(timeValues, amountValues):
     # Same length of time values and amount values
@@ -91,16 +88,3 @@ def loadSettings():
 def feed(amount):
     print('Feeder %s' % amount)
 
-def currentTime():
-    print('currentTime')
-    global datetime_diff
-    print('datetime_diff ', datetime_diff)
-    print('currentTime ', time.time() + datetime_diff)
-    return time.time() + datetime_diff
-
-def setCurrentTime(datetime):
-    print('setCurrentTime ', datetime)
-    print('time.time() ', time.time())
-    global datetime_diff
-    datetime_diff = datetime - time.time()
-    print('datetime_diff ', datetime_diff)
