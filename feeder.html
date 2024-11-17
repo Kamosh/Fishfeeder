@@ -1,5 +1,6 @@
 {% args times, validationMessage, validationStyle, minTimeDiff, minTicks, maxTicks, ticksSettings, currentDatetime %}
-<html>  
+<!DOCTYPE html>
+<html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
         <title>Fish feeder</title>
@@ -17,68 +18,82 @@
         <!-- SVG icons from https://www.svgrepo.com/collection/nilicons-rounded-interface-icons/ -->
     </head>
     <body>
-        <div>
+        <div class="col-s-1" style="text-align: left;">
             <span id="myPicker"></span>
             <input id="picker-input" hidden="true">
-            <button id="ntp-button"><img height="15px" src="static/clock-outline-badged-svgrepo-com.svg" alt="NTP synchronize"/></button>
-            <button id="picker-toggle"><img height="15px" src="static/clock-lines-svgrepo-com.svg" alt="Set datetime"/></button>
+            <button id="ntp-button" title="Synchronize using NTP"><img height="20em" src="static/clock_ntp.svg" alt="Synchronize time automatically"/></button>
+            <button id="picker-toggle" title="Set datetime"><img height="20em" src="static/clock_manual.svg" alt="Set time manually"/></button>
             <span id="clock">&nbsp;</span>
         </div>
 
-        <form name="feedForm" method="POST" onsubmit="return postFeed()">
-            <span>Feed amount</span>
-            <span>
-                <span>
-                    <input type="radio" name="amount" value="S" checked required/>
-                    <label for="small">Small</label>
-                </span>
+        <hr>
 
-                <span>
-                    <input type="radio" name="amount" value="M"/>
-                    <label for="medium">Medium</label>
-                </span>
+        <div class="col-s-1">
+            <form name="feedForm" method="POST" style="text-align: end;" onsubmit="return postFeed()">
+                <span style="vertical-align: middle;">
+                    <span style="vertical-align: top;">One-time feed</span>
+                    <span>
+                        <input type="radio" class="input-hidden" id="small" name="amount" value="S" checked required/>
+                        <label for="small">
+                            <img width="50em" src="static/Fisch-lineart.svg#svgView(viewBox(-130,-150,400,400))"/>
+                        </label>
+                    </span>
 
-                <span>
-                    <input type="radio" name="amount" value="L"/>
-                    <label for="large">Large</label>
+                    <span>
+                        <input type="radio" class="input-hidden" id="medium" name="amount" value="M"/>
+                        <label for="medium">
+                            <img width="50em" src="static/Fisch-lineart.svg#svgView(viewBox(-50,-60,220,220))"/>
+                        </label>
+                    </span>
+
+                    <span>
+                        <input type="radio" class="input-hidden" id="large" name="amount" value="L"/>
+                        <label for="large">
+                            <img width="50em" src="static/Fisch-lineart.svg#svgView(viewBox(0,-10,110,110))">
+                        </label>
+                    </span>
                 </span>
-            </span>
-            <button type="submit" class="app-button">Submit</button>
-        </form>
+                <button type="submit" class="app-button">Feed Now</button>
+            </form>
+        </div>
 
         <hr>
-        <p id="statusMessage" class="hideInMoment {{ validationStyle }}"><script>document.write(validationMessage);</script>&nbsp;</p>
-        <form name="settingsForm" action="" method="POST" onsubmit="return validateSettings()">
-            <table id="tableTimes" class="styled-table">
-                <thead>
-                    <tr>
-                        <th align="center" style="min-width:120px">Time</th>
-                        <th align="center" style="min-width:80px">Amount</th>
-                        <th align="center" style="min-width:30px">&nbsp;</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBodyTimes">
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="3">
-                            <div style="width: 100%; display:flex; justify-content: space-around">
-                                <span>
-                                    <input id="submit" class="app-button" type="submit" name="settings_submit" value="Submit"/>
-                                </span>
-                                <span>
-                                    <button class="app-button" onclick="insertRow()"><img height="15px" src="static/add-svgrepo-com.svg" alt="Add Row"></button>
-                                    <!--<button class="app-button" onclick="insertRow()">+</button>-->
-                                </span>
-                                <span>
-                                    <input id="cancel" class="app-button" type="button" name="settings_cancel" value="Cancel">
-                                </span>
-                            </div>
-                        </td>
-                    </tr>
-                </tfoot>                
-            </table>
-        </form>       
+        <div class="col-s-1">
+            <p id="statusMessage" class="hideInMoment {{ validationStyle }}"><script>document.write(validationMessage);</script>&nbsp;</p>
+        </div>
+
+        <div class="col-s-1">
+            <form name="settingsForm" class="settingsForm" action="" method="POST" onsubmit="return validateSettings()">
+                <table id="tableTimes" class="styled-table">
+                    <thead>
+                        <tr>
+                            <th align="center" style="min-width:120px">Time</th>
+                            <th align="center" style="min-width:80px">Amount</th>
+                            <th align="center" style="min-width:30px">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBodyTimes">
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3">
+                                <div style="width: 100%; display:flex; justify-content: space-around">
+                                    <span>
+                                        <input id="submit" class="app-button" type="submit" name="settings_submit" value="Save"/>
+                                    </span>
+                                    <span>
+                                        <button class="app-button" onclick="insertRow()"><img height="20em" src="static/add-svgrepo-com.svg" alt="Add Row"></button> 
+                                    </span>
+                                    <span>
+                                        <input id="cancel" class="app-button" type="button" name="settings_cancel" value="Cancel">
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </form>
+        </div>
     </body>
     <script src="static/feeder.js"></script>
 </html>

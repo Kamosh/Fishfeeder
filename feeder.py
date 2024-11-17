@@ -19,15 +19,13 @@ def validateValues(timeValues, amountValues):
 
     # Time ticks within min max interval
     for amountValue in amountValues:
-        #print((MIN_TICKS# <= int(ticksValue) <= MAX_TICKS))
         if amountValue not in ALL_AMOUNTS:
-        #if not (ticksValue.isdigit() and (MIN_TICKS <= int(ticksValue) <= MAX_TICKS)):
             return  'Invalid amount value \'%s\'.' % (amountValue)
 
     # Validate that there is always delay 5 minutes between times
     i = 0
     while i < len(timeValues):
-        t1 = convertTimeToMinutes(timeValues[i])        
+        t1 = convertTimeToMinutes(timeValues[i])
         j = i + 1
         while j < len(timeValues):
             if t1 == -1:
@@ -40,10 +38,10 @@ def validateValues(timeValues, amountValues):
                     timeDiff = t2 - t1
                     if timeDiff < (MIN_TIME_DIFF + 1) and timeDiff > -(MIN_TIME_DIFF +1):
                         return 'Minimum difference between times %s and %s is less than %s minutes.' % (timeValues[i], timeValues[j], MIN_TIME_DIFF)
-            j = j + 1        
+            j = j + 1
         i = i + 1
     return None
-    
+
 def convertTimeToMinutes(timeValue):
     splitTime = timeValue.split(':')
     if len(splitTime) != 2:
@@ -87,4 +85,3 @@ def loadSettings():
 
 def feed(amount):
     print('Feeder %s' % amount)
-

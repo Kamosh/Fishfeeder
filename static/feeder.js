@@ -57,6 +57,8 @@ myPicker.el.addEventListener('wdp.save', () => {
                 console.log(http.responseText);
                 setDatetime(http.responseText);
                 showStatusMessage('Time synchronized', VALID_CLASS);
+            } else {
+                showStatusMessage('Failed to synchronize time', INVALID_CLASS);
             }
         };
         http.send();
@@ -97,7 +99,7 @@ myPicker.el.addEventListener('wdp.save', () => {
         tbody.appendChild(tbodyTr);
     }
     _tbody = tbody;
-    
+
     let cancelButton = document.getElementById("cancel");
     cancelButton.addEventListener("click", onCancelClick);
     cancelButton.addEventListener("keyup", onCancelKey);
@@ -128,28 +130,37 @@ function createRow(rowData) {
         <td>
             <!-- fieldset-->
               <span>
-                <input type="radio" class="smallFish" name="amount${amountIndex}" value="S" ${smallChecked}/>
+                <input type="radio" class="input-hidden" id="amount${amountIndex}S" name="amount${amountIndex}" value="S" ${smallChecked}/>
+                <label for="amount${amountIndex}S">
+                  <img width="50em" src="static/Fisch-lineart.svg#svgView(viewBox(-130,-150,400,400))"/>
+                </label>
               </span>
 
               <span>
-                <input type="radio" class="mediumFish" name="amount${amountIndex}" value="M" ${mediumChecked}>
+                <input type="radio" class="input-hidden" id="amount${amountIndex}M" name="amount${amountIndex}" value="M" ${mediumChecked}>
+                <label for="amount${amountIndex}M">
+                  <img width="50em" src="static/Fisch-lineart.svg#svgView(viewBox(-50,-60,220,220))"/>
+                </label>
               </span>
 
               <span>
-                <input type="radio" class="largeFish" name="amount${amountIndex}" value="L" ${largeChecked}/>
+                <input type="radio" class="input-hidden" id="amount${amountIndex}L" name="amount${amountIndex}" value="L" ${largeChecked}/>
+                <label for="amount${amountIndex}L">
+                  <img width="50em" src="static/Fisch-lineart.svg#svgView(viewBox(0,-10,110,110))">
+                </label>
               </span>
             <!-- /fieldset -->
             <!-- input name='ticks' type='number' min=MIN_TICKS max=MAX_TICKS required value='${rowData[1]}' -->
         </td>
         <td>
-            <button class='delete-button' onclick='deleteRow(this)'><img src='static/trash-svgrepo-com.svg' alt='Remove' height='15'></button>
+            <button class='delete-button' onclick='deleteRow(this)'><img src='static/trash-svgrepo-com.svg' alt='Remove' height='20em'></button>
         </td>`;
     tbodyTr.innerHTML = row;
     return tbodyTr;
 }
 
 function insertRow() {
-    var rowData = ['', '35'];
+    var rowData = ['', 'S'];
     var tbodyTr = createRow(rowData);
     _tbody.appendChild(tbodyTr);
     tbodyTr.focus();
@@ -252,6 +263,8 @@ function postFeed() {
         if (http.readyState === 4 && http.status === 200) {
             console.log(http.responseText);
             showStatusMessage(http.responseText, VALID_CLASS);
+        } else {
+            showStatusMessage('Failed to feed', INVALID_CLASS);
         }
     };
     http.send(params);
@@ -273,6 +286,8 @@ function postSaveDatetime(datetime) {//year, month, day, hour, minute) {
             console.log(http.responseText);
             setDatetime(http.responseText);
             showStatusMessage('Datetime saved', VALID_CLASS);
+        } else {
+            showStatusMessage('Failed to save datetime', INVALID_CLASS);
         }
     };
     http.send(params);

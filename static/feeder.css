@@ -1,10 +1,37 @@
+.col-s-1 {
+    width: 100%;
+    margin: auto;
+}
+
 body {
+    /* background-color: fuchsia; */
     font-family: sans-serif;
+}
+
+@media screen and (min-width: 1024px) {
+  .col-s-1 {width: 50%;
+            margin: auto;
+  }
+  /*
+  body {
+    background-color: yellow;
+  }*/
+}
+
+@media screen and (min-width: 400px) and (max-width: 1023px) {
+  /* Tablet or mobile phone */
+  .col-s-1 {width: 90%;
+            margin: auto;
+  }
+  /*
+  body {
+    background-color: green;
+  }*/
 }
 
 p
 {
-    font-size: 0.9em;
+    font-size: 0.9rem;
 }
 
 span
@@ -45,7 +72,7 @@ span
 .styled-table {
     border-collapse: collapse;
     margin: 25px 0;
-    font-size: 0.9em;
+    font-size: 0.9rem;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 .styled-table thead tr {
@@ -56,7 +83,7 @@ span
 .styled-table th,
 .styled-table td {
     padding: 12px 15px;
-    vertical-align: top;
+    vertical-align: middle;
 }
 .styled-table tbody tr {
     border-bottom: 1px solid #dddddd;
@@ -77,7 +104,7 @@ span
   background-clip: padding-box;
   background-color: #009879;
   border: 1px solid transparent;
-  border-radius: .25rem;
+  border-radius: .5rem;
   box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
   box-sizing: border-box;
   color: #fff;
@@ -97,6 +124,7 @@ span
   touch-action: manipulation;
   vertical-align: baseline;
   width: 100px;
+  white-space: nowrap !important;
 }
 
 .app-button:hover,
@@ -108,7 +136,7 @@ span
   transform: translateY(-1px);
 }
 
-.app-button:active {  
+.app-button:active {
   box-shadow: rgba(0, 0, 0, .06) 0 2px 4px;
   transform: translateY(0);
 }
@@ -122,7 +150,7 @@ span
   transform: translateY(-1px);
 }
 
-.delete-button:active {  
+.delete-button:active {
   box-shadow: rgba(0, 0, 0, .06) 0 2px 4px;
   transform: translateY(0);
 }
@@ -141,26 +169,39 @@ span
 }
 
 .timeError.active {
-  padding: 0.3em;
+  padding: 0.3rem;
 }
 
-/*input[type="radio"] {
-  display:none;
-}*/
-
-/*input[type="radio"].smallFish:before {
-  content: url('Fisch-lineart.svg#svgView(viewBox(0,0,500,500))')
+.input-hidden {
+  /* For Hiding Radio Button Circles */
+  position: absolute;
+  left: -9999px;
 }
 
-input[type="radio"].mediumFish:before {
-  content: url('Fisch-lineart.svg#svgView(viewBox(0,10,250,250))')
+td {
+  text-align: center;
 }
 
-input[type="radio"].largeFish:before {
-  content: url('Fisch-lineart.svg#svgView(viewBox(0,20,180,180))')
+.settingsForm {
+  display: grid;
 }
 
-input[type=radio]:checked {
+input[type="radio"]:checked + label  > img {
+  border: 1px solid rgb(157, 255, 0);
+  box-shadow: 0 0 2px 2px #009879;
+  border-radius: 0.5rem;
+}
+
+input[type="radio"] + label > img {
+  border: 1px rgb(0, 0, 0);
+  padding: 0px;
+
+  transition: 500ms all;
+}
+
+/*
+input[type=radio]: {
   opacity: 1;
   filter: invert(19%) sepia(59%) saturate(6431%) hue-rotate(355deg) brightness(93%) contrast(120%)
-}*/
+}
+*/

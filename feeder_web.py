@@ -3,6 +3,7 @@ import os
 import feeder
 import ntplib
 import timeutil
+import logging
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'microdot', 'libs', 'common'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'microdot', 'src'))
